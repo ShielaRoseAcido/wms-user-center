@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
   <meta charset="utf-8">
@@ -12,12 +13,14 @@
 
 <body>
 <div class="container my-2">
+  Hello <b sec:authentication="principal.Username"></b>
+  <a href="/logout" style="float:right">Logout</a>
   <h1>Library Management System</h1>
   <div class="card">
     <div class="card-body">
       <div th:switch="${books}" class="container my-5">
         <p class="my-5">
-          <a href="/edit" class="btn btn-success">
+          <a href="/edit" class="btn btn-success" sec:authorize="hasAnyRole('ADMIN','PUBLISHER')">
             <i class="fas fa-solid fa-plus"> Add Book </i></a>
         </p>
         <div class="col-md-10">
@@ -40,13 +43,15 @@
                 <td th:text="${book.price}"></td>
                 <td>
                   <a th:href="@{/edit/{id}(id=${book.id})}"
-                     class="btn btn-warning">
+                     class="btn btn-warning"
+                     sec:authorize="hasAnyRole('ADMIN','PUBLISHER')">
                     <i class="fas fa-solid fa-edit"></i>
                   </a>
                 </td>
                 <td>
                   <a th:href="@{/delete/{id}(id=${book.id})}"
-                     class="btn btn-danger">
+                     class="btn btn-danger"
+                     sec:authorize="hasRole('ADMIN')">
                     <i class="fas fa-solid fa-trash"></i>
                   </a>
                 </td>
