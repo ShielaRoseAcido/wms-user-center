@@ -13,6 +13,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .antMatchers("/edit/**").hasAnyRole(UserRole.ADMIN.name(),UserRole.PUBLISHER.name())
         .antMatchers("/delete/**").hasRole(UserRole.ADMIN.name())
+        .antMatchers("/actuator/health","/actuator/info").permitAll()
+        .antMatchers("/actuator/**").hasRole(UserRole.ADMIN.name())
         .anyRequest().authenticated()
         .and()
         .formLogin();
