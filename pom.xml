@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>library-management-system</artifactId>
+	<artifactId>workflow-management-system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>library-management-system</name>
+	<name>workflow-management-system</name>
 	<description>Spring Boot application to manage library</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -67,7 +67,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

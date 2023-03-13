@@ -1,10 +1,10 @@
-package com.example.librarymanagementsystem;
+package com.sunlife.ph.workflowmanagementsystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LibraryManagementSystemApplicationTests {
+class WorkflowManagementSystemApplicationTests {
 
 	@Test
 	void contextLoads() {
