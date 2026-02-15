@@ -18,27 +18,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-<<<<<<< Updated upstream
-        .antMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
-        .antMatchers("/edit/**").hasAnyRole(UserRole.ADMIN.name())
-        .antMatchers("/delete/**").hasRole(UserRole.ADMIN.name())
-        .antMatchers("/actuator/**").hasRole(UserRole.ADMIN.name())
-        .anyRequest().authenticated()
-        .and()
-        .httpBasic()
-        .and()
-        .formLogin();
-=======
-            .antMatchers("/edit/**").hasAnyRole(UserRole.ADMIN.name())
+            .antMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
+            .antMatchers("/edit/**").hasRole(UserRole.ADMIN.name())
             .antMatchers("/delete/**").hasRole(UserRole.ADMIN.name())
-            .antMatchers("/actuator/health/**", "/actuator/info").permitAll()
             .antMatchers("/actuator/**").hasRole(UserRole.ADMIN.name())
             .anyRequest().authenticated()
             .and()
             .httpBasic()
             .and()
             .formLogin();
->>>>>>> Stashed changes
   }
 
   @Override
