@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wmsUserRoles>
+    <roles>
+        <role>User_Admin</role>
+        <role>User_NB_Processor</role>
+        <role>User_PS_Processor</role>
+        <role>User_UW</role>
+    </roles>
+</wmsUserRoles>

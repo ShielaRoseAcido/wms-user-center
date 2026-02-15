@@ -1,0 +1,7 @@
+[
+  { "code": "REG", "label": "Regular" },
+  { "code": "CON", "label": "Consultant" },
+  { "code": "RES", "label": "Resigned" },
+  { "code": "TER", "label": "Terminated" },
+  { "code": "RET", "label": "Retired" }
+]
