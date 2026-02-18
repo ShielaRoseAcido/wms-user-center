@@ -24,6 +24,7 @@ public class WMSUserRepositoryTest {
         WMSUser wmsUser = WMSUser.builder()
                 .employeeName("Shiela.Acido")
                 .employmentType("Contractual")
+                .role("ADMIN")
                 .build();
 
         WMSUser actual = wmsUserService.createWMSUser(wmsUser);

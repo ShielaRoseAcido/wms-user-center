@@ -19,6 +19,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
             .antMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
+            .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
             .antMatchers("/edit/**").hasRole(UserRole.ADMIN.name())
             .antMatchers("/delete/**").hasRole(UserRole.ADMIN.name())
             .antMatchers("/actuator/**").hasRole(UserRole.ADMIN.name())
