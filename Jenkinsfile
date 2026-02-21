@@ -98,7 +98,7 @@ pipeline {
             set -e
             docker run --rm --network wms-net curlimages/curl:8.5.0 \
               -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
-              -f http://wms-app:8080/actuator/health
+              -f http://wms-app:8081/actuator/health
           '''
         }
       }
