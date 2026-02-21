@@ -112,7 +112,15 @@ pipeline {
         '''
       }
     }
+  }
 
-  } // ✅ end stages
-
-} // ✅ end pipeline
+  post {
+    always {
+      junit 'target/surefire-reports/*.xml'
+      sh 'docker logs --tail 300 wms-app > container.log 2>&1 || true'
+      archiveArtifacts artifacts: 'target/*.jar,target/surefire-reports/**,container.log',
+                       allowEmptyArchive: true,
+                       fingerprint: true
+    }
+  }
+}
