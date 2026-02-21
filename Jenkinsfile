@@ -87,21 +87,29 @@ pipeline {
       }
     }
 
-    stage('Smoke Test (Container)') {
-      steps {
-        withCredentials([usernamePassword(
-          credentialsId: 'app-basic-auth',
-          usernameVariable: 'APP_BASIC_USER',
-          passwordVariable: 'APP_BASIC_PASS'
-        )]) {
-          sh '''
-            set -e
-            docker run --rm --network wms-net curlimages/curl:8.5.0 \
-              -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
-              -f http://wms-app:8081/actuator/health
-          '''
-        }
-      }
-    }
+stage('Smoke Test (Container)') {
+  steps {
+    sh '''
+      set -e
+      echo "Waiting for app to be healthy inside Docker network..."
+
+      for i in $(seq 1 30); do
+        code=$(docker run --rm --network wms-net curlimages/curl:8.5.0 \
+          -s -o /dev/null -w "%{http_code}" \
+          http://wms-app:8080/actuator/health || true)
+
+        echo "Attempt $i: HTTP $code"
+        if [ "$code" = "200" ]; then
+          echo "Container is UP ✅"
+          exit 0
+        fi
+        sleep 2
+      done
+
+      echo "Still not healthy ❌"
+      docker logs --tail 120 wms-app || true
+      exit 1
+    '''
   }
 }
+
