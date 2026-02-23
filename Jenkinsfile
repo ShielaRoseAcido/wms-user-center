@@ -1,10 +1,16 @@
 pipeline {
   agent any
 
+  options {
+    skipDefaultCheckout(true)
+    timestamps()
+  }
+
   environment {
     SPRING_DATASOURCE_URL      = 'jdbc:postgresql://postgres-ci:5432/wms'
     SPRING_DATASOURCE_USERNAME = 'wms'
     SPRING_DATASOURCE_PASSWORD = 'wms'
+    AWS_REGION                 = 'ap-southeast-1'
   }
 
   stages {
@@ -57,6 +63,7 @@ pipeline {
         '''
       }
     }
+
     stage('AWS Identity') {
       steps {
         withCredentials([usernamePassword(
@@ -64,7 +71,7 @@ pipeline {
           usernameVariable: 'AWS_ACCESS_KEY_ID',
           passwordVariable: 'AWS_SECRET_ACCESS_KEY'
         )]) {
-          sh 'aws sts get-caller-identity --region ap-southeast-1'
+          sh 'aws sts get-caller-identity --region $AWS_REGION'
         }
       }
     }
@@ -73,6 +80,7 @@ pipeline {
       steps {
         sh '''
           set -e
+          echo "BUILD_NUMBER=$BUILD_NUMBER"
           docker build -t wms-app:${BUILD_NUMBER} .
           docker image ls wms-app:${BUILD_NUMBER}
         '''
@@ -93,7 +101,7 @@ pipeline {
             docker network connect wms-net postgres-ci >/dev/null 2>&1 || true
             docker network connect wms-net jenkins-local >/dev/null 2>&1 || true
 
-            docker rm -f wms-app || true
+            docker rm -f wms-app >/dev/null 2>&1 || true
 
             docker run -d --name wms-app --network wms-net \
               -p 8082:8080 \
@@ -110,38 +118,69 @@ pipeline {
       }
     }
 
-
-
-    stage('Smoke Test (Container)') {
+    stage('Smoke Test (Auth)') {
       steps {
-        sh '''
-          set -e
-          echo "Waiting for app to be healthy inside Docker network..."
+        withCredentials([usernamePassword(
+          credentialsId: 'app-basic-auth',
+          usernameVariable: 'APP_BASIC_USER',
+          passwordVariable: 'APP_BASIC_PASS'
+        )]) {
+          sh '''
+            set -e
+            echo "Waiting for app to be ready (Auth smoke test)..."
 
-          for i in $(seq 1 30); do
-            code=$(docker run --rm --network wms-net curlimages/curl:8.5.0 \
-              -s -o /dev/null -w "%{http_code}" \
-              http://wms-app:8080/actuator/health || true)
+            for i in $(seq 1 30); do
+              if docker run --rm --network wms-net curlimages/curl:8.5.0 \
+                -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
+                -fsS http://wms-app:8080/actuator/health; then
+                echo "✅ App is UP (Auth OK)"
+                exit 0
+              fi
+              echo "Attempt $i failed, waiting..."
+              sleep 2
+            done
 
-            echo "Attempt $i: HTTP $code"
-            if [ "$code" = "200" ]; then
-              echo "Container is UP ✅"
-              exit 0
-            fi
-            sleep 2
-          done
-
-          echo "Still not healthy ❌"
-          docker logs --tail 120 wms-app || true
-          exit 1
-        '''
+            echo "❌ App never became ready"
+            docker logs --tail 200 wms-app || true
+            exit 1
+          '''
+        }
       }
     }
-  }
+
+    stage('Push to ECR') {
+      steps {
+        withCredentials([usernamePassword(
+          credentialsId: 'aws-creds',
+          usernameVariable: 'AWS_ACCESS_KEY_ID',
+          passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+        )]) {
+          sh '''
+            set -e
+
+            ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text --region "$AWS_REGION")
+            ECR="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+            REPO="wms-app"
+
+            aws ecr describe-repositories --repository-names "$REPO" --region "$AWS_REGION" >/dev/null 2>&1 \
+              || aws ecr create-repository --repository-name "$REPO" --region "$AWS_REGION" >/dev/null
+
+            aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR"
+
+            docker tag wms-app:${BUILD_NUMBER} "$ECR/$REPO:${BUILD_NUMBER}"
+            docker push "$ECR/$REPO:${BUILD_NUMBER}"
+
+            echo "✅ Pushed to ECR: $ECR/$REPO:${BUILD_NUMBER}"
+          '''
+        }
+      }
+    }
+
+  } // end stages
 
   post {
     always {
-      junit 'target/surefire-reports/*.xml'
+      junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
       sh 'docker logs --tail 300 wms-app > container.log 2>&1 || true'
       archiveArtifacts artifacts: 'target/*.jar,target/surefire-reports/**,container.log',
                        allowEmptyArchive: true,
