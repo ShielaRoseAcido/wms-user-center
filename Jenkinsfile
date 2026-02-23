@@ -57,6 +57,17 @@ pipeline {
         '''
       }
     }
+    stage('AWS Identity') {
+      steps {
+        withCredentials([usernamePassword(
+          credentialsId: 'aws-creds',
+          usernameVariable: 'AWS_ACCESS_KEY_ID',
+          passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+        )]) {
+          sh 'aws sts get-caller-identity --region ap-southeast-1'
+        }
+      }
+    }
 
     stage('Build Docker Image') {
       steps {
