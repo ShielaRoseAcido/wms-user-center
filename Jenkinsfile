@@ -46,6 +46,18 @@ pipeline {
       }
     }
 
+    stage('AWS Sanity') {
+      steps {
+        sh '''
+          set -e
+          echo "Who am I?"; whoami
+          echo "OS:"; uname -a
+          echo "AWS CLI:"; aws --version
+          echo "Where is aws?"; which aws || true
+        '''
+      }
+    }
+
     stage('Build Docker Image') {
       steps {
         sh '''
