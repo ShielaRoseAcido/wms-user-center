@@ -119,22 +119,47 @@ stage('Smoke Test (Auth)') {
     )]) {
       sh '''
         set -e
-
-        echo "Waiting for wms-app to be ready..."
+        echo "Waiting for app to be ready..."
         for i in $(seq 1 30); do
           if docker run --rm --network wms-net curlimages/curl:8.5.0 \
-            -sSf -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
-            http://wms-app:8080/actuator/health > /dev/null; then
-            echo "✅ wms-app is UP"
+            -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
+            -fsS http://wms-app:8080/actuator/health; then
+            echo "✅ App is UP"
             exit 0
           fi
-          echo "⏳ not ready yet (try $i/30)..."
           sleep 2
         done
-
-        echo "❌ wms-app never became ready. Showing logs:"
+        echo "❌ App never became ready"
         docker logs --tail 200 wms-app || true
         exit 1
+      '''
+    }
+  }
+}
+
+stage('Push to ECR') {
+  steps {
+    withCredentials([usernamePassword(
+      credentialsId: 'aws-creds',
+      usernameVariable: 'AWS_ACCESS_KEY_ID',
+      passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+    )]) {
+      sh '''
+        set -e
+        AWS_REGION=ap-southeast-1
+        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        ECR="$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+        REPO="wms-app"
+
+        aws ecr describe-repositories --repository-names "$REPO" --region "$AWS_REGION" >/dev/null 2>&1 \
+          || aws ecr create-repository --repository-name "$REPO" --region "$AWS_REGION" >/dev/null
+
+        aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR"
+
+        docker tag wms-app:$BUILD_NUMBER "$ECR/$REPO:$BUILD_NUMBER"
+        docker push "$ECR/$REPO:$BUILD_NUMBER"
+
+        echo "✅ Pushed: $ECR/$REPO:$BUILD_NUMBER"
       '''
     }
   }
