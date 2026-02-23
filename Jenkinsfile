@@ -119,9 +119,22 @@ stage('Smoke Test (Auth)') {
     )]) {
       sh '''
         set -e
-        docker run --rm --network wms-net curlimages/curl:8.5.0 \
-          -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
-          -f http://wms-app:8080/actuator/health
+
+        echo "Waiting for wms-app to be ready..."
+        for i in $(seq 1 30); do
+          if docker run --rm --network wms-net curlimages/curl:8.5.0 \
+            -sSf -u "$APP_BASIC_USER:$APP_BASIC_PASS" \
+            http://wms-app:8080/actuator/health > /dev/null; then
+            echo "✅ wms-app is UP"
+            exit 0
+          fi
+          echo "⏳ not ready yet (try $i/30)..."
+          sleep 2
+        done
+
+        echo "❌ wms-app never became ready. Showing logs:"
+        docker logs --tail 200 wms-app || true
+        exit 1
       '''
     }
   }
