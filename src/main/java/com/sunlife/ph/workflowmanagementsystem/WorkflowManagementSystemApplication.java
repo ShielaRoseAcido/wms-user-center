@@ -23,23 +23,52 @@ public class WorkflowManagementSystemApplication implements ApplicationRunner {
 	}
 
 	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		List<WMSUser> wmsUsers = wmsUserService.findAllWMSUsers();
+	public void run(ApplicationArguments args) {
+		try {
+			List<WMSUser> wmsUsers = wmsUserService.findAllWMSUsers();
 
-		if(wmsUsers != null && wmsUsers.isEmpty()) {
-			WMSUser wmsUser1 = WMSUser.builder().employeeName("Shiela.Acido").employmentType("Contractual")
-					.build();
-			WMSUser wmsUser2 = WMSUser.builder().employeeName("Xyrus.Acido").employmentType("Contractual")
-					.build();
-			WMSUser wmsUser3 = WMSUser.builder().employeeName("Rohan.Acido").employmentType("Contractual")
-					.build();
-			WMSUser wmsUser4 = WMSUser.builder().employeeName("Amirah.Acido").employmentType("Contractual")
-					.build();
+			if (wmsUsers != null && wmsUsers.isEmpty()) {
 
-			Arrays.asList(wmsUser1, wmsUser2, wmsUser3, wmsUser4).forEach(b -> wmsUserService.createWMSUser(b));
+				// TODO: Replace this with your actual role value/enum
+				// Example options:
+				//   .role("ADMIN")
+				//   .role(UserRole.ADMIN)
+				//   .role("USER")
+				final String defaultRole = "USER";
 
-			System.out.println("New WMS User added in database");
+				WMSUser wmsUser1 = WMSUser.builder()
+						.employeeName("Shiela.Acido")
+						.employmentType("Contractual")
+						.role(defaultRole)
+						.build();
+
+				WMSUser wmsUser2 = WMSUser.builder()
+						.employeeName("Xyrus.Acido")
+						.employmentType("Contractual")
+						.role(defaultRole)
+						.build();
+
+				WMSUser wmsUser3 = WMSUser.builder()
+						.employeeName("Rohan.Acido")
+						.employmentType("Contractual")
+						.role(defaultRole)
+						.build();
+
+				WMSUser wmsUser4 = WMSUser.builder()
+						.employeeName("Amirah.Acido")
+						.employmentType("Contractual")
+						.role(defaultRole)
+						.build();
+
+				Arrays.asList(wmsUser1, wmsUser2, wmsUser3, wmsUser4)
+						.forEach(wmsUserService::createWMSUser);
+
+				System.out.println("New WMS Users added in database");
+			}
+		} catch (Exception e) {
+			// IMPORTANT for ECS: don’t let seed failures kill the container
+			System.err.println("Startup seed skipped due to error: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
-
 }

@@ -1,0 +1,63 @@
+{
+    "volumes":  [
+
+                ],
+    "networkMode":  "awsvpc",
+    "cpu":  "512",
+    "requiresCompatibilities":  [
+                                    "FARGATE"
+                                ],
+    "containerDefinitions":  [
+                                 {
+                                     "image":  "861754177602.dkr.ecr.ap-southeast-1.amazonaws.com/wms-app:latest",
+                                     "volumesFrom":  [
+
+                                                     ],
+                                     "environment":  [
+                                                         {
+                                                             "value":  "default",
+                                                             "name":  "SPRING_PROFILES_ACTIVE"
+                                                         },
+                                                         {
+                                                             "value":  "jdbc:postgresql://wms-db.c7gywe88chjv.ap-southeast-1.rds.amazonaws.com:5432/wms",
+                                                             "name":  "SPRING_DATASOURCE_URL"
+                                                         },
+                                                         {
+                                                             "value":  "YOUR_DB_USERNAME",
+                                                             "name":  "SPRING_DATASOURCE_USERNAME"
+                                                         },
+                                                         {
+                                                             "value":  "YOUR_DB_PASSWORD",
+                                                             "name":  "SPRING_DATASOURCE_PASSWORD"
+                                                         }
+                                                     ],
+                                     "cpu":  0,
+                                     "portMappings":  [
+                                                          {
+                                                              "containerPort":  8080,
+                                                              "protocol":  "tcp",
+                                                              "hostPort":  8080
+                                                          }
+                                                      ],
+                                     "essential":  true,
+                                     "name":  "wms-app",
+                                     "logConfiguration":  {
+                                                              "logDriver":  "awslogs",
+                                                              "options":  {
+                                                                              "awslogs-region":  "ap-southeast-1",
+                                                                              "awslogs-stream-prefix":  "ecs",
+                                                                              "awslogs-group":  "/ecs/wms-app"
+                                                                          }
+                                                          },
+                                     "systemControls":  [
+
+                                                        ],
+                                     "mountPoints":  [
+
+                                                     ]
+                                 }
+                             ],
+    "family":  "wms-app-task",
+    "executionRoleArn":  "arn:aws:iam::861754177602:role/ecsTaskExecutionRole",
+    "memory":  "1024"
+}
