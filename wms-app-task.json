@@ -18,7 +18,7 @@
         { "name": "SPRING_PROFILES_ACTIVE", "value": "default" },
         { "name": "SPRING_DATASOURCE_URL", "value": "jdbc:postgresql://wms-db.c7gywe88chjv.ap-southeast-1.rds.amazonaws.com:5432/wms" },
         { "name": "SPRING_DATASOURCE_USERNAME", "value": "wms" },
-        { "name": "SPRING_DATASOURCE_PASSWORD", "value": "PUT_REAL_PASSWORD_HERE" }
+        { "name": "SPRING_DATASOURCE_PASSWORD", "value": "wms12345678" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
