@@ -6,7 +6,8 @@ import com.sunlife.ph.workflowmanagementsystem.service.WMSUserService;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,8 +16,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class WorkflowManagementSystemApplication implements ApplicationRunner {
 
-	@Autowired
-	private WMSUserService wmsUserService;
+	private static final Logger log = LoggerFactory.getLogger(WorkflowManagementSystemApplication.class);
+
+	private final WMSUserService wmsUserService;
+
+	public WorkflowManagementSystemApplication(WMSUserService wmsUserService) {
+		this.wmsUserService = wmsUserService;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(WorkflowManagementSystemApplication.class, args);
@@ -29,11 +35,8 @@ public class WorkflowManagementSystemApplication implements ApplicationRunner {
 
 			if (wmsUsers != null && wmsUsers.isEmpty()) {
 
-				// TODO: Replace this with your actual role value/enum
-				// Example options:
-				//   .role("ADMIN")
-				//   .role(UserRole.ADMIN)
-				//   .role("USER")
+				// IMPORTANT: set role because validation requires it
+				// If role is an enum in your entity, change this to UserRole.USER (or your enum)
 				final String defaultRole = "USER";
 
 				WMSUser wmsUser1 = WMSUser.builder()
@@ -63,12 +66,11 @@ public class WorkflowManagementSystemApplication implements ApplicationRunner {
 				Arrays.asList(wmsUser1, wmsUser2, wmsUser3, wmsUser4)
 						.forEach(wmsUserService::createWMSUser);
 
-				System.out.println("New WMS Users added in database");
+				log.info("New WMS Users added in database");
 			}
 		} catch (Exception e) {
-			// IMPORTANT for ECS: don’t let seed failures kill the container
-			System.err.println("Startup seed skipped due to error: " + e.getMessage());
-			e.printStackTrace();
+			// Do not crash ECS on seed failure
+			log.warn("Startup seed skipped", e);
 		}
 	}
 }
