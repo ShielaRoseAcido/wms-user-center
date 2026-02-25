@@ -1,9 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wmsUserRoles>
     <roles>
-        <role>User_Admin</role>
-        <role>User_NB_Processor</role>
-        <role>User_PS_Processor</role>
-        <role>User_UW</role>
+        <role>Admin</role>
+        <role>Account Manager</role>
+        <role>Accountant</role>
+        <role>Actuarial Analyst</role>
+        <role>Actuary</role>
+        <role>Bancassurance Officer</role>
+        <role>Brand Manager</role>
+        <role>Broker (Insurance Broker)</role>
+        <role>Business Analyst</role>
+        <role>Business Development Manager</role>
+        <role>Claims Adjuster</role>
+        <role>Claims Analyst</role>
+        <role>Claims Examiner</role>
+        <role>Claims Investigator</role>
+        <role>Claims Legal Specialist</role>
+        <role>Claims Manager</role>
+        <role>Claims Processor</role>
+        <role>Compliance Officer</role>
+        <role>Corporate Lawyer</role>
+        <role>Cybersecurity Analyst</role>
+        <role>Data Analyst</role>
+        <role>Data Engineer</role>
+        <role>DevOps Engineer</role>
+        <role>Digital Marketing Specialist</role>
+        <role>Enterprise Risk Manager (ERM)</role>
+        <role>Finance Analyst</role>
+        <role>Financial Reporting Analyst</role>
+        <role>Fraud Investigator (SIU)</role>
+        <role>Fund Manager</role>
+        <role>HR Business Partner (HRBP)</role>
+        <role>HR Specialist</role>
+        <role>IAM Specialist</role>
+        <role>Internal Auditor</role>
+        <role>Investment Analyst</role>
+        <role>IT Support Specialist</role>
+        <role>Junior Underwriter</role>
+        <role>Learning and Development Specialist</role>
+        <role>Legal Counsel</role>
+        <role>Loss Assessor</role>
+        <role>Marketing Specialist</role>
+        <role>Medical Underwriter</role>
+        <role>New Business Processor</role>
+        <role>Operations Analyst</role>
+        <role>Operations Manager</role>
+        <role>Partnership Manager</role>
+        <role>Policy Administration Specialist</role>
+        <role>Policy Issuance Specialist</role>
+        <role>Portfolio Manager</role>
+        <role>Premium Accounting Specialist</role>
+        <role>Premium Billing Specialist</role>
+        <role>Pricing Actuary</role>
+        <role>Process Improvement Specialist</role>
+        <role>Product Development Specialist</role>
+        <role>Product Manager</role>
+        <role>Project Manager</role>
+        <role>QA Tester</role>
+        <role>Recruiter</role>
+        <role>Relationship Manager</role>
+        <role>Reinsurance Analyst</role>
+        <role>Reinsurance Manager</role>
+        <role>Renewals Specialist</role>
+        <role>Reserving Actuary</role>
+        <role>Risk Manager</role>
+        <role>Sales Executive</role>
+        <role>Sales Manager</role>
+        <role>Sales Representative</role>
+        <role>Senior Underwriter</role>
+        <role>Software Developer</role>
+        <role>Systems Analyst</role>
+        <role>Treasury Analyst</role>
+        <role>Underwriting Analyst</role>
+        <role>Underwriting Assistant</role>
+        <role>Underwriter</role>
+        <role>Valuation Actuary</role>
+
     </roles>
 </wmsUserRoles>

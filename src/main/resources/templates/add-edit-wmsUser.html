@@ -26,6 +26,7 @@
 
                 <div class="form-group col-md-8">
                     <label for="employmentType">Employment Type</label>
+
                     <select id="employmentType" name="employmentType" class="form-control">
                     </select>
                     <div class="text-danger" th:if="${#fields.hasErrors('employmentType')}" th:errors="*{employmentType}"></div>

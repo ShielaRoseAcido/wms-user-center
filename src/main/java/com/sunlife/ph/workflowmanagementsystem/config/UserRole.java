@@ -5,7 +5,7 @@ public enum UserRole {
   /**
    * User can do anything to manage wms user by (show, add, edit, delete wms users)
    */
-  ADMIN,
+  Admin,
   /**
    * User can (add/edit/delete)
    */

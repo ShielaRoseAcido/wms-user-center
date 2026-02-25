@@ -33,6 +33,7 @@ public class WMSUserServiceImpl implements WMSUserService {
     @Override
     public WMSUser createWMSUser(WMSUser wmsUser) {
         System.out.println("*** Create a WMS User ***");
+
         return wmsUserRepository.save(wmsUser);
     }
 

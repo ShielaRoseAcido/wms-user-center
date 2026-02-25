@@ -29,6 +29,7 @@ public class WMSUserServiceImplTest {
         WMSUser wmsUser = WMSUser.builder()
                 .employeeName("Shiela.Acido")
                 .employmentType("Contractual")
+                .role("Admin")
                 .build();
 
         wmsUserService.createWMSUser(wmsUser);

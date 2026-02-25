@@ -20,9 +20,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
             .antMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
             .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-            .antMatchers("/edit/**").hasRole(UserRole.ADMIN.name())
-            .antMatchers("/delete/**").hasRole(UserRole.ADMIN.name())
-            .antMatchers("/actuator/**").hasRole(UserRole.ADMIN.name())
+            .antMatchers("/edit/**").hasRole(UserRole.Admin.name())
+            .antMatchers("/delete/**").hasRole(UserRole.Admin.name())
+            .antMatchers("/actuator/**").hasRole(UserRole.Admin.name())
             .anyRequest().authenticated()
             .and()
             .httpBasic()
@@ -35,6 +35,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     auth.inMemoryAuthentication()
         .withUser(basicUser)
         .password("{noop}" + basicPass)
-        .roles(UserRole.ADMIN.name());
+        .roles(UserRole.Admin.name());
   }
 }
