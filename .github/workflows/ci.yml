@@ -8,6 +8,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: wms
+          POSTGRES_USER: wms
+          POSTGRES_PASSWORD: wms
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U wms -d wms"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,7 +32,31 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
+
+      - name: Wait for Postgres
+        run: |
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5432 -U wms -d wms; then
+              echo "Postgres is ready ✅"
+              exit 0
+            fi
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+          echo "Postgres did not become ready ❌"
+          exit 1
+        env:
+          PGPASSWORD: wms
 
       - name: Build & test
+        env:
+          # If your app/security needs these:
+          APP_BASIC_USER: admin
+          APP_BASIC_PASS: 1234
+
+          # DB settings for tests/boot context:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/wms
+          SPRING_DATASOURCE_USERNAME: wms
+          SPRING_DATASOURCE_PASSWORD: wms
         run: mvn -B clean test
