@@ -1,0 +1,3 @@
+vpc_id         = "vpc-07e092577778ba816"
+alb_subnet_ids = ["subnet-04144b9dcb2898607", "subnet-09e06d48bde3b173e"]
+ecs_subnet_ids = ["subnet-04144b9dcb2898607", "subnet-09e06d48bde3b173e"]

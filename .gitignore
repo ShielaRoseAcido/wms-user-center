@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Terraform (Sprint 4)
+iac/.terraform/
+iac/.terraform.lock.hcl
+iac/*.tfstate
+iac/*.tfstate.*
+iac/terraform.tfvars
+iac/tf-output.json
