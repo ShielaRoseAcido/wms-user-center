@@ -39,3 +39,9 @@ iac/*.tfstate
 iac/*.tfstate.*
 iac/terraform.tfvars
 iac/tf-output.json
+
+iac/tfplan
+ecs-task-trust.json
+taskdef-wms-app.json
+--limit
+--order-by
